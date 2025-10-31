@@ -26,6 +26,7 @@ public class Main {
             Customer customerFromString = new Customer(dataString);
             printCustomer(customerFromString);
 
+
             System.out.println("\nПроверка toString(), toShortString() и equals()");
 
             Customer c1 = new Customer(
@@ -49,6 +50,10 @@ public class Main {
             System.out.println(c1.toShortString());
 
             System.out.println("\nРавны ли объекты c1 и c2? " + c1.equals(c2));
+
+            System.out.println("\nСоздание простого клиента (MainCustomer):");
+            MainCustomer simpleCustomer = new MainCustomer("ИП Иванов", "+7 911 222-33-44");
+            System.out.println(simpleCustomer.toShortString());
 
         } catch (Exception e) {
             System.err.println("Ошибка: " + e.getMessage());
