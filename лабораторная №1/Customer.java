@@ -1,5 +1,11 @@
 package org.example;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Customer {
 
     private String name;
@@ -13,7 +19,43 @@ public class Customer {
         this.phone = validateAndNormalizePhone(phone);
         this.contactPerson = validateContactPerson(contactPerson);
     }
-    
+
+    public Customer(String dataString) {
+        if (dataString == null || dataString.trim().isEmpty()) {
+            throw new IllegalArgumentException("Строка с данными пуста");
+        }
+        String[] parts = dataString.split(";");
+        if (parts.length != 4) {
+            throw new IllegalArgumentException(
+                    "Строка должна содержать 4 параметра, разделённых ';'"
+            );
+        }
+        this.name = validateName(parts[0]);
+        this.address = validateAddress(parts[1]);
+        this.phone = validateAndNormalizePhone(parts[2]);
+        this.contactPerson = validateContactPerson(parts[3]);
+    }
+
+    public Customer(String jsonFilePath, boolean isJsonFile) throws IOException {
+        if (!isJsonFile) {
+            throw new IllegalArgumentException("Для CSV используйте другой конструктор");
+        }
+
+        try (FileReader reader = new FileReader(jsonFilePath)) {
+            Gson gson = new GsonBuilder().create();
+
+            Customer temp = gson.fromJson(reader, Customer.class);
+
+            this.name = validateName(temp.name);
+            this.address = validateAddress(temp.address);
+            this.phone = validateAndNormalizePhone(temp.phone);
+            this.contactPerson = validateContactPerson(temp.contactPerson);
+
+        } catch (JsonSyntaxException e) {
+            throw new IllegalArgumentException("Ошибка в формате JSON", e);
+        }
+    }
+
     public String getName() {
         return name;
     }
