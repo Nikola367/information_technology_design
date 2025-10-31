@@ -6,21 +6,19 @@ import com.google.gson.JsonSyntaxException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Customer {
+public class Customer extends MainCustomer{
 
-    private String name;
     private String address;
-    private String phone;
     private String contactPerson;
 
     public Customer(String name, String address, String phone, String contactPerson) {
-        this.name = validateName(name);
+        super(name, phone);
         this.address = validateAddress(address);
-        this.phone = validateAndNormalizePhone(phone);
         this.contactPerson = validateContactPerson(contactPerson);
     }
 
     public Customer(String dataString) {
+        super();
         if (dataString == null || dataString.trim().isEmpty()) {
             throw new IllegalArgumentException("Строка с данными пуста");
         }
@@ -37,6 +35,7 @@ public class Customer {
     }
 
     public Customer(String jsonFilePath, boolean isJsonFile) throws IOException {
+        super();
         if (!isJsonFile) {
             throw new IllegalArgumentException("Для CSV используйте другой конструктор");
         }
@@ -56,14 +55,6 @@ public class Customer {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = validateName(name);
-    }
-
     public String getAddress() {
         return address;
     }
@@ -72,13 +63,6 @@ public class Customer {
         this.address = validateAddress(address);
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = validateAndNormalizePhone(phone);
-    }
 
     public String getContactPerson() {
         return contactPerson;
@@ -88,22 +72,6 @@ public class Customer {
         this.contactPerson = validateContactPerson(contactPerson);
     }
 
-    public static String validateName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("Имя клиента не может быть null");
-        }
-        String trimmed = name.trim();
-        if (trimmed.isEmpty()) {
-            throw new IllegalArgumentException("Имя клиента не может быть пустым");
-        }
-        if (trimmed.length() < 2) {
-            throw new IllegalArgumentException("Имя клиента слишком короткое (мин. 2 символа)");
-        }
-        if (trimmed.length() > 100) {
-            throw new IllegalArgumentException("Имя клиента слишком длинное (макс. 100 символов)");
-        }
-        return trimmed;
-    }
 
     public static String validateAddress(String addr) {
         if (addr == null) {
@@ -122,22 +90,6 @@ public class Customer {
         return trimmed;
     }
 
-    public static String validateAndNormalizePhone(String phone) {
-        if (phone == null) {
-            throw new IllegalArgumentException("Телефон не может быть null");
-        }
-        String cleaned = phone.replaceAll("[^0-9+]", "");
-        if (cleaned.matches("8\\d{10}")) {
-            return cleaned;
-        }
-        if (cleaned.matches("\\+7\\d{10}")) {
-            return "8" + cleaned.substring(2);
-        }
-        if (cleaned.matches("\\d{10}")) {
-            return "8" + cleaned;
-        }
-        throw new IllegalArgumentException("Некорректный формат номера телефона");
-    }
 
     public static String validateContactPerson(String person) {
         if (person == null) {
@@ -164,12 +116,6 @@ public class Customer {
                 '}';
     }
 
-    public String toShortString() {
-        return "Customer{" +
-                "name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
