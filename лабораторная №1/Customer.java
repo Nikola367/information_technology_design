@@ -154,4 +154,31 @@ public class Customer {
         }
         return trimmed;
     }
+    @Override
+    public String toString() {
+        return "Customer {" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", contactPerson='" + contactPerson + '\'' +
+                '}';
+    }
+
+    public String toShortString() {
+        return "Customer{" +
+                "name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return name.equals(customer.name)
+                && address.equals(customer.address)
+                && phone.equals(customer.phone)
+                && contactPerson.equals(customer.contactPerson);
+    }
 }
